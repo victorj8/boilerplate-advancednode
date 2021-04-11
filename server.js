@@ -41,6 +41,13 @@ myDB(async client => {
     }
   ));
 
+  function ensureAuthenticated(req, res, next) {
+    if(req.isAuthenticated()){
+      return next();
+    }
+    res.redirect('/');
+  }
+
   // Be sure to change the title
   app.route('/').get((req, res) => {
     //Change the response to render the Pug template
@@ -51,8 +58,14 @@ myDB(async client => {
     });
   });
 
+  app
+    .route('/profile')
+    .get(ensureAuthenticated, (req, res) => {
+      res.render(process.cwd + '/views/pug/profile');
+    });
+
   app.post('/login', passport.authenticate('local', { failureRedirect: '/' }), (req, res) => {
-    res.render('pug/profile', {
+    res.render(process.cwd + '/views/pug/profile', {
       user: req.user
     });
   });
