@@ -28,6 +28,14 @@ module.exports = function (app, myDataBase) {
       });
     });
 
+  app
+    .route('/chat')
+    .get(ensureAuthenticated, (req, res) => {
+      res.render(process.cwd() + '/views/pug/chat', {
+        user: req.user
+      });  
+    });
+
   app.post('/login', passport.authenticate('local', { failureRedirect: '/' }), (req, res) => {
     res.render(process.cwd() + '/views/pug/profile', {
       user: req.user
@@ -73,6 +81,7 @@ module.exports = function (app, myDataBase) {
   app.route('/auth/github/callback')
     .get(passport.authenticate('github', {failureRedirect: '/'}),
     (req, res) => {
-      res.redirect('/profile');
+      req.session.user_id = req.user_id;
+      res.redirect('/chat');
     });
 }
