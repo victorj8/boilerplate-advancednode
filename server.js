@@ -86,8 +86,15 @@ myDB(async client => {
         connected: false}
       );
     });
+
+    socket.on('chat message', (message) => {      
+      io.emit('chat message', {
+        name: socket.request.user.name,
+        message: message
+      });
+    });
     console.log('A user has connected');
-  });
+  });  
 }).catch(e => {
   app.route('/').get((req, res) => {
     res.render('pug', { title: e, message: 'Unable to login' });

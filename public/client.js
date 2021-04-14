@@ -8,10 +8,17 @@ socket.on('user', data => {
   $('#messages').append($('<li>').html('<b>' + message + '</b>'));
 });
 
+socket.on('chat message', data => {
+  let message = data.name + ": " + data.message;
+  $('#messages').append($('<li>').html('<b>' + message + '</b>'));
+});
+
 $(document).ready(function () {
   // Form submittion with new message in field with id 'm'
   $('form').submit(function () {
     var messageToSend = $('#m').val();
+
+    socket.emit('chat message', messageToSend);
 
     $('#m').val('');
     return false; // prevent form submit from refreshing page
